@@ -1,0 +1,69 @@
+# 教程：https://mp.weixin.qq.com/s/gP_ovkwlV-j2ZsMACxpHfQ
+
+# 清空环境中的所有变量
+rm(list = ls())
+
+# 重启
+rstudioapi::restartSession()
+
+
+#根据你的实际文件路径修改下面的代码
+setwd("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/03-13 Biodiversity/4_code")
+
+install.packages(c("patchwork", "terra","tidyterra", "ggplot2", "tmap", 
+                   "ggspatial", "geodata", "sf", "rnaturalearth","maps","matrixStats"))
+
+# 获取世界地图
+library(rnaturalearth)
+wr2 <- ne_countries(scale = "medium", returnclass = "sf") #地图是sf类型的数据
+
+library(ggplot2)
+ggplot(data = wr2) +
+  geom_sf()
+
+# 空间数据准备
+library(raster)
+library(terra)
+
+## 栅格数据
+BHI_2000 <- raster("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/03-13 Biodiversity/2_Biodiversity Habitat Index/data/BHI_v2_Proportion_of_Species/BILBI_P_BHIv2_Species_2000.tif")
+BHI_2005 <- raster("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/03-13 Biodiversity/2_Biodiversity Habitat Index/data/BHI_v2_Proportion_of_Species/BILBI_P_BHIv2_Species_2005.tif")
+BHI_2010 <- raster("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/03-13 Biodiversity/2_Biodiversity Habitat Index/data/BHI_v2_Proportion_of_Species/BILBI_P_BHIv2_Species_2010.tif")
+BHI_2015 <- raster("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/03-13 Biodiversity/2_Biodiversity Habitat Index/data/BHI_v2_Proportion_of_Species/BILBI_P_BHIv2_Species_2015.tif")
+
+plot(BHI_2000)
+plot(BHI_2005)
+plot(BHI_2010)
+plot(BHI_2015)
+
+
+# 添加标题
+title(main = "Proportion of Species in 2010", xlab = "Longitute", ylab = "Latitude")
+
+## 重新整理适量数据
+library(ggplot2)
+library(rnaturalearth)
+wr2 <- ne_countries(scale = "medium", returnclass = "sf") #地图是sf类型的数据
+
+#获取纬度
+lat<-yFromRow(BHI_2010)
+#获取值矩阵并计算每行的均值
+row_means <- rowMeans(as.matrix(BHI_2010,wide=TRUE),na.rm=TRUE)
+#组合纬度和均值数据到数据框
+dat<-data.frame(lat,row_means)
+#绘制折线图
+ggplot(dat, aes(y=row_means, x=lat)) + geom_line()
+
+p2 <- ggplot(dat, aes(y = row_means, x = lat)) +
+  geom_line(linewidth = 0.5) +
+  labs(x = "Latitude (°)", y = "Proportion of Species") +
+  theme_classic() +
+  coord_flip() + #x轴和y轴对调
+  ggtitle("2010")
+
+p2<-ggplot(dat, aes(y=row_means, x=lat)) +
+  geom_line(size=0.5)+
+  labs(x="Latitude(°)",y="proportion of Species")+
+  theme_classic()+
+  coord_flip() #x轴和y轴对调
+p2
