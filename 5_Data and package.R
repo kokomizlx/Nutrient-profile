@@ -501,7 +501,11 @@ Yields_soybean_2005_sp <- SpatialPointsDataFrame(coords=coords_soybean_2005, dat
 Yields_soybean_2010_sp <- SpatialPointsDataFrame(coords=coords_soybean_2010, data=Yields_soybean_2010) 
 Yields_soybean_2000_sp <- SpatialPointsDataFrame(coords=coords_soybean_2000, data=Yields_soybean_2000) 
 
-Y_Water_g <- rasterize(SWPO_2020_Y[, c("x", "y")], grid, SWPO_2020_Y[, 'Water_g'], fun=mean)
+Water_soybean_2000 <- rasterize(soybean_2000[, c("x", "y")], grid, soybean_2000[, 'Water_g'], fun=mean)
+Water_soybean_2005 <- rasterize(soybean_2005[, c("x", "y")], grid, soybean_2005[, 'Water_g'], fun=mean)
+Water_soybean_2010 <- rasterize(soybean_2010[, c("x", "y")], grid, soybean_2010[, 'Water_g'], fun=mean)
+Water_soybean_2020 <- rasterize(soybean_2020[, c("x", "y")], grid, soybean_2020[, 'Water_g'], fun=mean)
+
 Y_Ca_g<- rasterize(SWPO_2020_Y[, c("x", "y")], grid, SWPO_2020_Y[, 'Ca_g'], fun=mean)
 Y_Zn_g <- rasterize(SWPO_2020_Y[, c("x", "y")], grid, SWPO_2020_Y[, 'Zn_g'], fun=mean)
 
