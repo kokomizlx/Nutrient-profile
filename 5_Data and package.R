@@ -4,6 +4,11 @@ library(raster)
 library(rasterVis)
 library(data.table)
 
+cell_size = 0.083 # 网格单元大小，以度为单位
+lon_min <- -159.708; lon_max <- 178.958; lat_min <- -47.2083; lat_max <- 69.9583
+ncols <- ((lon_max - lon_min)/cell_size)+1; nrows <- ((lat_max - lat_min)/cell_size)+1 #计算出网格的列数和行数，基于给定的经纬度范围和网格单元大小
+grid <- raster(nrows=nrows, ncols=ncols, xmn=lon_min, xmx=lon_max, ymn=lat_min, ymx=lat_max, res=cell_size, crs="+proj=longlat +datum=WGS84")
+
 # Data input
 # 用的都是Yield数据
 # 1 Wheat
@@ -211,6 +216,22 @@ bean_2005 <- bean_2005[bean_a != 0]
 bean_2010 <- bean_2010[bean_a != 0]
 bean_2020 <- bean_2020[BEAN_A != 0]
 
+# 0300157	Beans, seeds, raw
+bean_2000$Protein_g <- bean_2000$bean*22.38*10
+bean_2005$Protein_g <- bean_2005$bean_a*22.38*10
+bean_2010$Protein_g <- bean_2010 $bean_a*22.38*10
+bean_2020$Protein_g <- bean_2020$BEAN_A*22.38*10
+
+bean_2000$Fat_g <- bean_2000$bean*1.05*10 # fat, total; derived by analysis using continuous extraction
+bean_2005$Fat_g <- bean_2005$bean_a*1.05*10
+bean_2010$Fat_g <- bean_2010 $bean_a*1.05*10
+bean_2020$Fat_g <- bean_2020$BEAN_A*1.05*10
+
+bean_2000$Fibre_g <- bean_2000$bean*37.83*10 # fibre; determined by neutral detergent method
+bean_2005$Fibre_g <- bean_2005$bean_a*37.83*10
+bean_2010$Fibre_g <- bean_2010 $bean_a*37.83*10
+bean_2020$Fibre_g <- bean_2020$BEAN_A*37.83*10
+
 # 15 Chickpea
 # chickpea_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
 #                    select = c("x", "y", "swpy"))
@@ -225,6 +246,27 @@ chickpea_2005 <- chickpea_2005[chic_a != 0]
 chickpea_2010 <- chickpea_2010[chic_a != 0]
 chickpea_2020 <- chickpea_2020[CHIC_A != 0]
 
+# 0300259	Chickpea, seeds, mature, water-soaked, raw
+chickpea_2005$Water_g <- chickpea_2005$chic_a*46.89*10  
+chickpea_2010$Water_g <- chickpea_2010$chic_a*46.89*10 
+chickpea_2020$Water_g <- chickpea_2020$CHIC_A*46.89*10
+
+chickpea_2005$Protein_g <- chickpea_2005$chic_a*13.95*10 # protein, total; calculated from total nitrogen 
+chickpea_2010$Protein_g <- chickpea_2010$chic_a*13.95*10 
+chickpea_2020$Protein_g <- chickpea_2020$CHIC_A*13.95*10
+
+chickpea_2005$Fat_g <- chickpea_2005$chic_a*3.27*10  
+chickpea_2010$Fat_g <- chickpea_2010$chic_a*3.27*10 
+chickpea_2020$Fat_g <- chickpea_2020$CHIC_A*3.27*10
+
+chickpea_2005$Carbohydrate_g <- chickpea_2005$chic_a*34.21*10  # carbohydrate, total; calculated by difference
+chickpea_2010$Carbohydrate_g <- chickpea_2010$chic_a*34.21*10 
+chickpea_2020$Carbohydrate_g <- chickpea_2020$CHIC_A*34.21*10
+
+chickpea_2005$Fatti_acids_g <- chickpea_2005$chic_a*(0.3+0.61+1.62)*10  
+chickpea_2010$Fatti_acids_g <- chickpea_2010$chic_a*(0.3+0.61+1.62)*10 
+chickpea_2020$Fatti_acids_g <- chickpea_2020$CHIC_A*(0.3+0.61+1.62)*10
+
 # 16 Cowpea
 # cowpea_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
 #                        select = c("x", "y", "swpy"))
@@ -238,6 +280,70 @@ cowpea_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/
 cowpea_2005 <- cowpea_2005[cowp_a != 0]
 cowpea_2010 <- cowpea_2010[cowp_a != 0]
 cowpea_2020 <- cowpea_2020[COWP_A != 0]
+
+#0300527 Cowpea, seeds, raw
+cowpea_2005$Energy_g <- cowpea_2005$cowp_a*1419.07*10 # energy, total metabolizable; calculated from the energy-producing food components 
+cowpea_2010$Energy_g <- cowpea_2010$cowp_a*1419.07*10 # (original as from source)
+cowpea_2020$Energy_g <- cowpea_2020$COWP_A*1419.07*10
+
+cowpea_2005$Water_g <- cowpea_2005$cowp_a*12.7*10  
+cowpea_2010$Water_g <- cowpea_2010$cowp_a*12.7*10 
+cowpea_2020$Water_g <- cowpea_2020$COWP_A*12.7*10
+
+cowpea_2005$Protein_g <- cowpea_2005$cowp_a*20.21*10 # protein, total; calculated from total nitrogen 
+cowpea_2010$Protein_g <- cowpea_2010$cowp_a*20.21*10 
+cowpea_2020$Protein_g <- cowpea_2020$COWP_A*20.21*10
+
+cowpea_2005$Fat_g <- cowpea_2005$cowp_a*2.37*10 # fat, total; derived by analysis using continuous extraction  
+cowpea_2010$Fat_g <- cowpea_2010$cowp_a*2.37*10 
+cowpea_2020$Fat_g <- cowpea_2020$COWP_A*2.37*10
+
+cowpea_2005$Carbohydrate_g <- cowpea_2005$cowp_a*61.24*10  # carbohydrate, total; calculated by difference
+cowpea_2010$Carbohydrate_g <- cowpea_2010$cowp_a*61.24*10 
+cowpea_2020$Carbohydrate_g <- cowpea_2020$COWP_A*61.24*10
+
+cowpea_2005$Fibre_g <- cowpea_2005$cowp_a*23.59*10 # fibre, total dietary; determined gravimetrically by the AOAC total dietary fibre method 
+cowpea_2010$Fibre_g <- cowpea_2010$cowp_a*23.59*10 # (Prosky and similar methods) 
+cowpea_2020$Fibre_g <- cowpea_2020$COWP_A*23.59*10
+
+# Mineral elements
+cowpea_2005$Ca_mg <- cowpea_2005$cowp_a*77.52*10  
+cowpea_2010$Ca_mg <- cowpea_2010$cowp_a*77.52*10 
+cowpea_2020$Ca_mg <- cowpea_2020$COWP_A*77.52*10
+
+cowpea_2005$P_mg <- cowpea_2005$cowp_a*354.52*10  
+cowpea_2010$P_mg <- cowpea_2010$cowp_a*354.52*10 
+cowpea_2020$P_mg <- cowpea_2020$COWP_A*354.52*10
+
+cowpea_2005$Mg_mg <- cowpea_2005$cowp_a*178.39*10  
+cowpea_2010$Mg_mg <- cowpea_2010$cowp_a*178.39*10 
+cowpea_2020$Mg_mg <- cowpea_2020$COWP_A*178.39*10
+
+cowpea_2005$K_mg <- cowpea_2005$cowp_a*1082.74*10  
+cowpea_2010$K_mg <- cowpea_2010$cowp_a*1082.74*10 
+cowpea_2020$K_mg <- cowpea_2020$COWP_A*1082.74*10
+
+cowpea_2005$Na_mg <- cowpea_2005$cowp_a*10.31*10  
+cowpea_2010$Na_mg <- cowpea_2010$cowp_a*10.31*10 
+cowpea_2020$Na_mg <- cowpea_2020$COWP_A*10.31*10
+
+# Trace elements
+cowpea_2005$Fe_mg <- cowpea_2005$cowp_a*5.13*10  
+cowpea_2010$Fe_mg <- cowpea_2010$cowp_a*5.13*10 
+cowpea_2020$Fe_mg <- cowpea_2020$COWP_A*5.13*10
+
+cowpea_2005$Cu_mg <- cowpea_2005$cowp_a*0.7*10  
+cowpea_2010$Cu_mg <- cowpea_2010$cowp_a*0.7*10 
+cowpea_2020$Cu_mg <- cowpea_2020$COWP_A*0.7*10
+
+cowpea_2005$Zn_mg <- cowpea_2005$cowp_a*3.88*10  
+cowpea_2010$Zn_mg <- cowpea_2010$cowp_a*3.88*10 
+cowpea_2020$Zn_mg <- cowpea_2020$COWP_A*3.88*10
+
+# Vitamin
+cowpea_2005$Vitamin_mg <- cowpea_2005$cowp_a*(0.14+0.03+0.26)*10  
+cowpea_2010$Vitamin_mg <- cowpea_2010$cowp_a*(0.14+0.03+0.26)*10 
+cowpea_2020$Vitamin_mg <- cowpea_2020$COWP_A*(0.14+0.03+0.26)*10
 
 # 17 Pigeon Pea
 # pige_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
@@ -295,9 +401,9 @@ pige_2005$K_mg <- pige_2005$pige_a*1214.8*10
 pige_2010$K_mg <- pige_2010$pige_a*1214.8*10
 pige_2020$K_mg <- pige_2020$PIGE_A*1214.8*10
 
-pige_2005$NA_mg <- pige_2005$pige_a*1.62*10 
-pige_2010$NA_mg <- pige_2010$pige_a*1.62*10
-pige_2020$NA_mg <- pige_2020$PIGE_A*1.62*10
+pige_2005$Na_mg <- pige_2005$pige_a*1.62*10 
+pige_2010$Na_mg <- pige_2010$pige_a*1.62*10
+pige_2020$Na_mg <- pige_2020$PIGE_A*1.62*10
 
 # Trace elements
 pige_2005$Fe_mg <- pige_2005$pige_a*1.94*10 
@@ -313,8 +419,9 @@ pige_2010$Zn_mg <- pige_2010$pige_a*2.02*10
 pige_2020$Zn_mg <- pige_2020$PIGE_A*2.02*10
 
 #Vitamin 暂时是加起来
-
-
+pige_2005$Vitamin_mg <- pige_2005$pige_a*(1.06+2.69+0.07+1.47)*10 
+pige_2010$Vitamin_mg <- pige_2010$pige_a*(1.06+2.69+0.07+1.47)*10
+pige_2020$Vitamin_mg <- pige_2020$PIGE_A*(1.06+2.69+0.07+1.47)*10
 
 # 18 Lentil
 # lentil_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
@@ -329,6 +436,15 @@ lentil_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/
 lentil_2005 <- lentil_2005[lent_a != 0]
 lentil_2010 <- lentil_2010[lent_a != 0]
 lentil_2020 <- lentil_2020[LENT_A != 0]
+
+# 0300198	Lentil, seeds, raw
+lentil_2005$Water_g <- lentil_2005$lent_a*10.4*10 
+lentil_2010$Water_g <- lentil_2010$lent_a*10.4*10
+lentil_2020$Water_g <- lentil_2020$LENT_A*10.4*10
+
+lentil_2005$Protein_g <- lentil_2005$lent_a*22.7*10 # protein, total; calculated from total nitrogen 
+lentil_2010$Protein_g <- lentil_2010$lent_a*22.7*10
+lentil_2020$Protein_g <- lentil_2020$LENT_A*22.7*10
 
 # 19 Other Pulses
 # opul_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
@@ -369,6 +485,25 @@ soybean_2000$fatty_acids_g <- soybean_2000$soyb*17.92*10
 soybean_2005$fatty_acids_g <- soybean_2005$soyb_a*17.92*10
 soybean_2010$fatty_acids_g <- soybean_2010$soyb_a*17.92*10
 soybean_2020$fatty_acids_g <- soybean_2020$SOYB_A*17.92*10
+
+coords_soybean_2000 = soybean_2000[,c("x","y")] #坐标
+coords_soybean_2005 = soybean_2005[,c("x","y")]
+coords_soybean_2010 = soybean_2010[,c("x","y")]
+coords_soybean_2020 = soybean_2020[,c("x","y")]
+
+Yields_soybean_2000 = data.frame(soybean_2000$soyb)
+Yields_soybean_2005 = data.frame(soybean_2005$soyb_a)
+Yields_soybean_2010 = data.frame(soybean_2010$soyb_a)
+Yields_soybean_2020 = data.frame(soybean_2020$SOYB_A)
+
+Yields_soybean_2000_sp <- SpatialPointsDataFrame(coords=coords_soybean_2000, data=Yields_soybean_2000) #存储空间点数据和相关属性数据的框架。它是sp包中的一个类
+Yields_soybean_2005_sp <- SpatialPointsDataFrame(coords=coords_soybean_2005, data=Yields_soybean_2005) 
+Yields_soybean_2010_sp <- SpatialPointsDataFrame(coords=coords_soybean_2010, data=Yields_soybean_2010) 
+Yields_soybean_2000_sp <- SpatialPointsDataFrame(coords=coords_soybean_2000, data=Yields_soybean_2000) 
+
+Y_Water_g <- rasterize(SWPO_2020_Y[, c("x", "y")], grid, SWPO_2020_Y[, 'Water_g'], fun=mean)
+Y_Ca_g<- rasterize(SWPO_2020_Y[, c("x", "y")], grid, SWPO_2020_Y[, 'Ca_g'], fun=mean)
+Y_Zn_g <- rasterize(SWPO_2020_Y[, c("x", "y")], grid, SWPO_2020_Y[, 'Zn_g'], fun=mean)
 
 # 21 Groundnut
 groundnut_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
