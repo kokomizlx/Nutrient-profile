@@ -365,4 +365,48 @@ png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/
 plot(Vitamin_pige_2020, main="Vitamin_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
+# 18 Lentil
+# lentil_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
+#                    select = c("x", "y", "swpy"))
+# lentil_2005 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
+#                      select = c("x", "y", "lent_a"))
+lentil_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+                     select = c("x", "y", "lent_a"))
+lentil_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+                     select = c("x", "y", "LENT_A"))
 
+lentil_2010 <- lentil_2010[lent_a != 0]
+lentil_2020 <- lentil_2020[LENT_A != 0]
+
+# 0300198	Lentil, seeds, raw
+lentil_2010$Water_g <- lentil_2010$lent_a*10.4*10
+lentil_2020$Water_g <- lentil_2020$LENT_A*10.4*10
+
+Water_lentil_2010 <- rasterize(lentil_2010[, c("x", "y")], grid, lentil_2010[, 'Water_g'], fun=mean)
+Water_lentil_2020 <- rasterize(lentil_2020[, c("x", "y")], grid, lentil_2020[, 'Water_g'], fun=mean)
+
+plot(Water_lentil_2010, main="Water_lentil_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_lentil_2010.png", width = 800, height = 500) 
+plot(Water_lentil_2010, main="Water_lentil_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_lentil_2020.png", width = 800, height = 500) 
+plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+lentil_2010$Protein_g <- lentil_2010$lent_a*22.7*10 # protein, total; calculated from total nitrogen 
+lentil_2020$Protein_g <- lentil_2020$LENT_A*22.7*10
+
+Protein_lentil_2010 <- rasterize(lentil_2010[, c("x", "y")], grid, lentil_2010[, 'Protein_g'], fun=mean)
+Protein_lentil_2020 <- rasterize(lentil_2020[, c("x", "y")], grid, lentil_2020[, 'Protein_g'], fun=mean)
+
+plot(Water_lentil_2010, main="Protein_lentil_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2010.png", width = 800, height = 500) 
+plot(Water_lentil_2010, main="Water_lentil_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Water_lentil_2020, main="Protein_lentil_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2020.png", width = 800, height = 500) 
+plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
