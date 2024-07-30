@@ -410,3 +410,455 @@ plot(Water_lentil_2020, main="Protein_lentil_2020", xlab="Longitude", ylab="Lati
 png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2020.png", width = 800, height = 500) 
 plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
+
+# 16 Cowpea
+cowpea_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+                     select = c("x", "y", "cowp_a"))
+cowpea_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+                     select = c("x", "y", "COWP_A")) 
+
+cowpea_2010 <- cowpea_2010[cowp_a != 0]
+cowpea_2020 <- cowpea_2020[COWP_A != 0]
+
+# 300527 Cowpea, seeds, raw
+# Energy
+cowpea_2010$Energy_g <- cowpea_2010$cowp_a*1419.07*10 # energy, total metabolizable; calculated from the energy-producing food components
+cowpea_2020$Energy_g <- cowpea_2020$COWP_A*1419.07*10 # (original as from source)
+
+Energy_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Energy_g'], fun=mean)
+Energy_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Energy_g'], fun=mean)
+
+plot(Energy_cowpea_2010, main="Energy_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_cowpea_2010.png", width = 800, height = 500) 
+plot(Energy_cowpea_2010, main="Energy_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Energy_cowpea_2020, main="Energy_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_cowpea_2020.png", width = 800, height = 500) 
+plot(Energy_cowpea_2020, main="Energy_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Water
+cowpea_2010$Water_g <- cowpea_2010$cowp_a*12.7*10 
+cowpea_2020$Water_g <- cowpea_2020$COWP_A*12.7*10
+
+Water_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Water_g'], fun=mean)
+Water_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Water_g'], fun=mean)
+
+plot(Water_cowpea_2010, main="Water_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_cowpea_2010.png", width = 800, height = 500) 
+plot(Water_cowpea_2010, main="Water_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Water_cowpea_2020, main="Water_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_cowpea_2020.png", width = 800, height = 500) 
+plot(Water_cowpea_2020, main="Water_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Protein
+cowpea_2010$Protein_g <- cowpea_2010$cowp_a*20.21*10 # protein, total; calculated from total nitrogen 
+cowpea_2020$Protein_g <- cowpea_2020$COWP_A*20.21*10
+
+Protein_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Protein_g'], fun=mean)
+Protein_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Protein_g'], fun=mean)
+
+plot(Protein_cowpea_2010, main="Protein_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_cowpea_2010.png", width = 800, height = 500) 
+plot(Protein_cowpea_2010, main="Protein_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Protein_cowpea_2020, main="Protein_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_cowpea_2020.png", width = 800, height = 500) 
+plot(Protein_cowpea_2020, main="Protein_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Fat
+cowpea_2010$Fat_g <- cowpea_2010$cowp_a*2.37*10 # fat, total; derived by analysis using continuous extraction  
+cowpea_2020$Fat_g <- cowpea_2020$COWP_A*2.37*10
+
+Fat_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Fat_g'], fun=mean)
+Fat_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Fat_g'], fun=mean)
+
+plot(Fat_cowpea_2010, main="Fat_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_cowpea_2010.png", width = 800, height = 500) 
+plot(Fat_cowpea_2010, main="Fat_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fat_cowpea_2020, main="Fat_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_cowpea_2020.png", width = 800, height = 500) 
+plot(Fat_cowpea_2020, main="Fat_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Carbohydrate
+cowpea_2010$Carbohydrate_g <- cowpea_2010$cowp_a*61.24*10 # carbohydrate, total; calculated by difference
+cowpea_2020$Carbohydrate_g <- cowpea_2020$COWP_A*61.24*10
+
+Carbohydrate_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Carbohydrate_g'], fun=mean)
+Carbohydrate_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Carbohydrate_g'], fun=mean)
+
+plot(Carbohydrate_cowpea_2010, main="Carbohydrate_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_cowpea_2010.png", width = 800, height = 500) 
+plot(Carbohydrate_cowpea_2010, main="Carbohydrate_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Carbohydrate_cowpea_2020, main="Carbohydrate_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_cowpea_2020.png", width = 800, height = 500) 
+plot(Carbohydrate_cowpea_2020, main="Carbohydrate_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Fibre 
+cowpea_2010$Fibre_g <- cowpea_2010$cowp_a*23.59*10 # fibre, total dietary; determined gravimetrically by the AOAC total dietary fibre method 
+cowpea_2020$Fibre_g <- cowpea_2020$COWP_A*23.59*10 # (Prosky and similar methods)
+
+Fibre_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Fibre_g'], fun=mean)
+Fibre_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Fibre_g'], fun=mean)
+
+plot(Fibre_cowpea_2010, main="Fibre_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_cowpea_2010.png", width = 800, height = 500) 
+plot(Fibre_cowpea_2010, main="Fibre_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fibre_cowpea_2020, main="Fibre_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_cowpea_2020.png", width = 800, height = 500) 
+plot(Fibre_cowpea_2020, main="Fibre_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Mineral elements
+# Ca
+cowpea_2010$Ca_mg <- cowpea_2010$cowp_a*77.52*10 
+cowpea_2020$Ca_mg <- cowpea_2020$COWP_A*77.52*10
+
+Ca_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Ca_mg'], fun=mean)
+Ca_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Ca_mg'], fun=mean)
+
+plot(Ca_cowpea_2010, main="Ca_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_cowpea_2010.png", width = 800, height = 500) 
+plot(Ca_cowpea_2010, main="Ca_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Ca_cowpea_2020, main="Ca_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_cowpea_2020.png", width = 800, height = 500) 
+plot(Ca_cowpea_2020, main="Ca_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# P
+cowpea_2010$P_mg <- cowpea_2010$cowp_a*354.52*10 
+cowpea_2020$P_mg <- cowpea_2020$COWP_A*354.52*10
+
+P_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'P_mg'], fun=mean)
+P_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'P_mg'], fun=mean)
+
+plot(P_cowpea_2010, main="P_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_cowpea_2010.png", width = 800, height = 500) 
+plot(P_cowpea_2010, main="P_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(P_cowpea_2020, main="P_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_cowpea_2020.png", width = 800, height = 500) 
+plot(P_cowpea_2020, main="P_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Mg
+cowpea_2010$Mg_mg <- cowpea_2010$cowp_a*178.39*10 
+cowpea_2020$Mg_mg <- cowpea_2020$COWP_A*178.39*10
+
+Mg_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Mg_mg'], fun=mean)
+Mg_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Mg_mg'], fun=mean)
+
+plot(Mg_cowpea_2010, main="Mg_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_cowpea_2010.png", width = 800, height = 500) 
+plot(Mg_cowpea_2010, main="Mg_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Mg_cowpea_2020, main="Mg_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_cowpea_2020.png", width = 800, height = 500) 
+plot(Mg_cowpea_2020, main="Mg_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# K
+cowpea_2010$K_mg <- cowpea_2010$cowp_a*1082.74*10 
+cowpea_2020$K_mg <- cowpea_2020$COWP_A*1082.74*10
+
+K_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'K_mg'], fun=mean)
+K_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'K_mg'], fun=mean)
+
+plot(K_cowpea_2010, main="K_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_cowpea_2010.png", width = 800, height = 500) 
+plot(K_cowpea_2010, main="K_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(K_cowpea_2020, main="K_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_cowpea_2020.png", width = 800, height = 500) 
+plot(K_cowpea_2020, main="K_cowpea_2020", xlab="Longitude", ylab="Latitude")
+
+# Na
+cowpea_2010$Na_mg <- cowpea_2010$cowp_a*10.31*10 
+cowpea_2020$Na_mg <- cowpea_2020$COWP_A*10.31*10
+
+Na_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Na_mg'], fun=mean)
+Na_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Na_mg'], fun=mean)
+
+plot(Na_cowpea_2010, main="Na_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_cowpea_2010.png", width = 800, height = 500) 
+plot(Na_cowpea_2010, main="Na_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Na_cowpea_2020, main="Na_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_cowpea_2020.png", width = 800, height = 500) 
+plot(Na_cowpea_2020, main="Na_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Trace elements
+# Fe
+cowpea_2010$Fe_mg <- cowpea_2010$cowp_a*5.13*10 
+cowpea_2020$Fe_mg <- cowpea_2020$COWP_A*5.13*10
+
+Fe_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Fe_mg'], fun=mean)
+Fe_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Fe_mg'], fun=mean)
+
+plot(Fe_cowpea_2010, main="Fe_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_cowpea_2010.png", width = 800, height = 500) 
+plot(Fe_cowpea_2010, main="Fe_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fe_cowpea_2020, main="Fe_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_cowpea_2020.png", width = 800, height = 500) 
+plot(Fe_cowpea_2020, main="Fe_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Cu
+cowpea_2010$Cu_mg <- cowpea_2010$cowp_a*0.7*10 
+cowpea_2020$Cu_mg <- cowpea_2020$COWP_A*0.7*10
+
+Cu_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Cu_mg'], fun=mean)
+Cu_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Cu_mg'], fun=mean)
+
+plot(Cu_cowpea_2010, main="Cu_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_cowpea_2010.png", width = 800, height = 500) 
+plot(Cu_cowpea_2010, main="Cu_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Cu_cowpea_2020, main="Cu_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_cowpea_2020.png", width = 800, height = 500) 
+plot(Cu_cowpea_2020, main="Cu_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Zn
+cowpea_2010$Zn_mg <- cowpea_2010$cowp_a*3.88*10 
+cowpea_2020$Zn_mg <- cowpea_2020$COWP_A*3.88*10
+
+Zn_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Zn_mg'], fun=mean)
+Zn_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Zn_mg'], fun=mean)
+
+plot(Zn_cowpea_2010, main="Zn_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_cowpea_2010.png", width = 800, height = 500) 
+plot(Zn_cowpea_2010, main="Zn_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Zn_cowpea_2020, main="Zn_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_cowpea_2020.png", width = 800, height = 500) 
+plot(Zn_cowpea_2020, main="Zn_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Vitamin
+cowpea_2010$Vitamin_mg <- cowpea_2010$cowp_a*(0.14+0.03+0.26)*10 
+cowpea_2020$Vitamin_mg <- cowpea_2020$COWP_A*(0.14+0.03+0.26)*10
+
+Vitamin_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Vitamin_mg'], fun=mean)
+Vitamin_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Vitamin_mg'], fun=mean)
+
+plot(Vitamin_cowpea_2010, main="Vitamin_cowpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_cowpea_2010.png", width = 800, height = 500) 
+plot(Vitamin_cowpea_2010, main="Vitamin_cowpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Vitamin_cowpea_2020, main="Vitamin_cowpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_cowpea_2020.png", width = 800, height = 500) 
+plot(Vitamin_cowpea_2020, main="Vitamin_cowpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# 15 Chickpea
+# chickpea_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
+#                    select = c("x", "y", "swpy"))
+chickpea_2005 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
+                       select = c("x", "y", "chic_a"))
+chickpea_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+                       select = c("x", "y", "chic_a"))
+chickpea_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+                       select = c("x", "y", "CHIC_A")) 
+
+chickpea_2010 <- chickpea_2010[chic_a != 0]
+chickpea_2020 <- chickpea_2020[CHIC_A != 0]
+
+# 0300259	Chickpea, seeds, mature, water-soaked, raw
+# Water
+chickpea_2010$Water_g <- chickpea_2010$chic_a*46.89*10 
+chickpea_2020$Water_g <- chickpea_2020$CHIC_A*46.89*10
+
+Water_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_2010[, 'Water_g'], fun=mean)
+Water_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Water_g'], fun=mean)
+
+plot(Water_chickpea_2010, main="Water_chickpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_chickpea_2010.png", width = 800, height = 500) 
+plot(Water_chickpea_2010, main="Water_chickpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Water_chickpea_2020, main="Water_chickpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_chickpea_2020.png", width = 800, height = 500) 
+plot(Water_chickpea_2020, main="Water_chickpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Protein
+chickpea_2010$Protein_g <- chickpea_2010$chic_a*13.95*10 # protein, total; calculated from total nitrogen 
+chickpea_2020$Protein_g <- chickpea_2020$CHIC_A*13.95*10
+
+Protein_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_2010[, 'Protein_g'], fun=mean)
+Protein_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Protein_g'], fun=mean)
+
+plot(Protein_chickpea_2010, main="Protein_chickpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_chickpea_2010.png", width = 800, height = 500) 
+plot(Protein_chickpea_2010, main="Protein_chickpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Protein_chickpea_2020, main="Protein_chickpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_chickpea_2020.png", width = 800, height = 500) 
+plot(Protein_chickpea_2020, main="Protein_chickpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Fat
+chickpea_2010$Fat_g <- chickpea_2010$chic_a*3.27*10 
+chickpea_2020$Fat_g <- chickpea_2020$CHIC_A*3.27*10
+
+Fat_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_2010[, 'Fat_g'], fun=mean)
+Fat_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Fat_g'], fun=mean)
+
+plot(Fat_chickpea_2010, main="Fat_chickpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_chickpea_2010.png", width = 800, height = 500) 
+plot(Fat_chickpea_2010, main="Fat_chickpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fat_chickpea_2020, main="Fat_chickpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_chickpea_2020.png", width = 800, height = 500) 
+plot(Fat_chickpea_2020, main="Fat_chickpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Carbohydrate
+chickpea_2010$Carbohydrate_g <- chickpea_2010$chic_a*34.21*10 # carbohydrate, total; calculated by difference
+chickpea_2020$Carbohydrate_g <- chickpea_2020$CHIC_A*34.21*10
+
+Carbohydrate_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_2010[, 'Carbohydrate_g'], fun=mean)
+Carbohydrate_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Carbohydrate_g'], fun=mean)
+
+plot(Carbohydrate_chickpea_2010, main="Carbohydrate_chickpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_chickpea_2010.png", width = 800, height = 500) 
+plot(Carbohydrate_chickpea_2010, main="Carbohydrate_chickpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Carbohydrate_chickpea_2020, main="Carbohydrate_chickpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_chickpea_2020.png", width = 800, height = 500) 
+plot(Carbohydrate_chickpea_2020, main="Carbohydrate_chickpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Fatty acids
+chickpea_2010$Fattyacids_g <- chickpea_2010$chic_a*(0.3+0.61+1.62)*10 
+chickpea_2020$Fattyacids_g <- chickpea_2020$CHIC_A*(0.3+0.61+1.62)*10
+
+Fattyacids_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_2010[, 'Fattyacids_g'], fun=mean)
+Fattyacids_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Fattyacids_g'], fun=mean)
+
+plot(Fattyacids_chickpea_2010, main="Fattyacids_chickpea_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_chickpea_2010.png", width = 800, height = 500) 
+plot(Fattyacids_chickpea_2010, main="Fattyacids_chickpea_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fattyacids_chickpea_2020, main="Fattyacids_chickpea_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_chickpea_2020.png", width = 800, height = 500) 
+plot(Fattyacids_chickpea_2020, main="Fattyacids_chickpea_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# 14 Bean
+bean_2000 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
+                   select = c("x", "y", "bean"))
+bean_2005 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
+                   select = c("x", "y", "bean_a"))
+bean_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+                   select = c("x", "y", "bean_a"))
+bean_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+                   select = c("x", "y", "BEAN_A")) 
+
+bean_2000 <- bean_2000[bean != 0]
+bean_2010 <- bean_2010[bean_a != 0]
+bean_2020 <- bean_2020[BEAN_A != 0]
+
+# 0300157	Beans, seeds, raw
+# Protein
+bean_2000$Protein_g <- bean_2000$bean*22.38*10
+bean_2010$Protein_g <- bean_2010 $bean_a*22.38*10
+bean_2020$Protein_g <- bean_2020$BEAN_A*22.38*10
+
+Protein_bean_2000 <- rasterize(bean_2000[, c("x", "y")], grid, bean_2000[, 'Protein_g'], fun=mean)
+Protein_bean_2010 <- rasterize(bean_2010[, c("x", "y")], grid, bean_2010[, 'Protein_g'], fun=mean)
+Protein_bean_2020 <- rasterize(bean_2020[, c("x", "y")], grid, bean_2020[, 'Protein_g'], fun=mean)
+
+plot(Protein_bean_2000, main="Protein_bean_2000", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2000.png", width = 800, height = 500) 
+plot(Protein_bean_2000, main="Protein_bean_2000", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Protein_bean_2010, main="Protein_bean_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2010.png", width = 800, height = 500) 
+plot(Protein_bean_2010, main="Protein_bean_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Protein_bean_2020, main="Protein_bean_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2020.png", width = 800, height = 500) 
+plot(Protein_bean_2020, main="Protein_bean_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Fat
+bean_2000$Fat_g <- bean_2000$bean*1.05*10 # fat, total; derived by analysis using continuous extraction
+bean_2010$Fat_g <- bean_2010 $bean_a*1.05*10
+bean_2020$Fat_g <- bean_2020$BEAN_A*1.05*10
+
+Fat_bean_2000 <- rasterize(bean_2000[, c("x", "y")], grid, bean_2000[, 'Fat_g'], fun=mean)
+Fat_bean_2010 <- rasterize(bean_2010[, c("x", "y")], grid, bean_2010[, 'Fat_g'], fun=mean)
+Fat_bean_2020 <- rasterize(bean_2020[, c("x", "y")], grid, bean_2020[, 'Fat_g'], fun=mean)
+
+plot(Fat_bean_2000, main="Fat_bean_2000", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2000.png", width = 800, height = 500) 
+plot(Fat_bean_2000, main="Fat_bean_2000", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fat_bean_2010, main="Fat_bean_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2010.png", width = 800, height = 500) 
+plot(Fat_bean_2010, main="Fat_bean_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fat_bean_2020, main="Fat_bean_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2020.png", width = 800, height = 500) 
+plot(Fat_bean_2020, main="Fat_bean_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+# Fibre
+bean_2000$Fibre_g <- bean_2000$bean*37.83*10 # fibre; determined by neutral detergent method
+bean_2010$Fibre_g <- bean_2010 $bean_a*37.83*10
+bean_2020$Fibre_g <- bean_2020$BEAN_A*37.83*10
+
+Fibre_bean_2000 <- rasterize(bean_2000[, c("x", "y")], grid, bean_2000[, 'Fibre_g'], fun=mean)
+Fibre_bean_2010 <- rasterize(bean_2010[, c("x", "y")], grid, bean_2010[, 'Fibre_g'], fun=mean)
+Fibre_bean_2020 <- rasterize(bean_2020[, c("x", "y")], grid, bean_2020[, 'Fibre_g'], fun=mean)
+
+plot(Fibre_bean_2000, main="Fibre_bean_2000", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2000.png", width = 800, height = 500) 
+plot(Fibre_bean_2000, main="Fibre_bean_2000", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fibre_bean_2010, main="Fibre_bean_2010", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2010.png", width = 800, height = 500) 
+plot(Fibre_bean_2010, main="Fibre_bean_2010", xlab="Longitude", ylab="Latitude")
+dev.off()
+
+plot(Fibre_bean_2020, main="Fibre_bean_2020", xlab="Longitude", ylab="Latitude") 
+png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2020.png", width = 800, height = 500) 
+plot(Fibre_bean_2020, main="Fibre_bean_2020", xlab="Longitude", ylab="Latitude")
+dev.off()
