@@ -8,100 +8,89 @@ cell_size = 0.083 # 网格单元大小，以度为单位
 lon_min <- -159.708; lon_max <- 178.958; lat_min <- -47.2083; lat_max <- 69.9583
 ncols <- ((lon_max - lon_min)/cell_size)+1; nrows <- ((lat_max - lat_min)/cell_size)+1 #计算出网格的列数和行数，基于给定的经纬度范围和网格单元大小
 grid <- raster(nrows=nrows, ncols=ncols, xmn=lon_min, xmx=lon_max, ymn=lat_min, ymx=lat_max, res=cell_size, crs="+proj=longlat +datum=WGS84")
+world <- map_data("world") # 获取世界地图坐标
 
 # Data input
 # 用的都是Yield数据
 # 20 Soybean
-soybean_2000 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
+soybean_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
                       select = c("x", "y", "soyb"))
-soybean_2005 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
-                       select = c("x", "y", "soyb_a"))
-soybean_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+soybean_2010 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
                       select = c("x", "y", "soyb_a"))
-soybean_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+soybean_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
                       select = c("x", "y", "SOYB_A"))
 
 soybean_2000 <- soybean_2000[soyb != 0]
-soybean_2005 <- soybean_2005[soyb_a != 0]
 soybean_2010 <- soybean_2010[soyb_a != 0]
 soybean_2020 <- soybean_2020[SOYB_A != 0]
 
 coords_2000 = soybean_2000[,c("x","y")] #坐标
-# coords_2005 = soybean_2005[,c("x","y")] 这一年的csv没有标注经纬度
 coords_2010 = soybean_2010[,c("x","y")]
 coords_2020 = soybean_2020[,c("x","y")]
 
 # 0300299	Soybean, seeds, dried, raw
 soybean_2000$Water_g <- soybean_2000$soyb*9.5*10
-soybean_2005$Water_g <- soybean_2005$soyb_a*9.5*10
 soybean_2010$Water_g <- soybean_2010$soyb_a*9.5*10
 soybean_2020$Water_g <- soybean_2020$SOYB_A*9.5*10
 
 soybean_2000$fatty_acids_g <- soybean_2000$soyb*17.92*10
-soybean_2005$fatty_acids_g <- soybean_2005$soyb_a*17.92*10
 soybean_2010$fatty_acids_g <- soybean_2010$soyb_a*17.92*10
 soybean_2020$fatty_acids_g <- soybean_2020$SOYB_A*17.92*10
 
 Yields_soybean_2000 = data.frame(soybean_2000$soyb)
-Yields_soybean_2005 = data.frame(soybean_2005$soyb_a)
 Yields_soybean_2010 = data.frame(soybean_2010$soyb_a)
 Yields_soybean_2020 = data.frame(soybean_2020$SOYB_A)
 
 Yields_soybean_2000_sp <- SpatialPointsDataFrame(coords=coords_2000, data=Yields_soybean_2000) #存储空间点数据和相关属性数据的框架。它是sp包中的一个类
-Yields_soybean_2005_sp <- SpatialPointsDataFrame(coords=coords_2005, data=Yields_soybean_2005) 
 Yields_soybean_2010_sp <- SpatialPointsDataFrame(coords=coords_2010, data=Yields_soybean_2010) 
 Yields_soybean_2000_sp <- SpatialPointsDataFrame(coords=coords_2000, data=Yields_soybean_2000) 
 
 Water_soybean_2000 <- rasterize(soybean_2000[, c("x", "y")], grid, soybean_2000[, 'Water_g'], fun=mean)
-Water_soybean_2005 <- rasterize(soybean_2005[, c("x", "y")], grid, soybean_2005[, 'Water_g'], fun=mean)
 Water_soybean_2010 <- rasterize(soybean_2010[, c("x", "y")], grid, soybean_2010[, 'Water_g'], fun=mean)
 Water_soybean_2020 <- rasterize(soybean_2020[, c("x", "y")], grid, soybean_2020[, 'Water_g'], fun=mean)
 
 Fattyacids_soybean_2000 <- rasterize(soybean_2000[, c("x", "y")], grid, soybean_2000[, 'fatty_acids_g'], fun=mean)
-Fattyacids_soybean_2005 <- rasterize(soybean_2005[, c("x", "y")], grid, soybean_2005[, 'fatty_acids_g'], fun=mean)
 Fattyacids_soybean_2010 <- rasterize(soybean_2010[, c("x", "y")], grid, soybean_2010[, 'fatty_acids_g'], fun=mean)
 Fattyacids_soybean_2020 <- rasterize(soybean_2020[, c("x", "y")], grid, soybean_2020[, 'fatty_acids_g'], fun=mean)
 
 # Water
 plot(Water_soybean_2000, main="Water_soybean_2000", xlab="Longitude", ylab="Latitude") # 首先绘制图形
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_soybean_2000.png", width = 800, height = 500)  # 然后将图形保存到特定路径
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_soybean_2000.png", width = 800, height = 500)  # 然后将图形保存到特定路径
 plot(Water_soybean_2000, main="Water_soybean_2000", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Water_soybean_2010, main="Water_soybean_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_soybean_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_soybean_2010.png", width = 800, height = 500) 
 plot(Water_soybean_2010, main="Water_soybean_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Water_soybean_2020, main="Water_soybean_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_soybean_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_soybean_2020.png", width = 800, height = 500) 
 plot(Water_soybean_2020, main="Water_soybean_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 # Fatty acids
 plot(Fattyacids_soybean_2000, main="Fattyacids_soybean_2000", xlab="Longitude", ylab="Latitude") # 首先绘制图形
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_soybean_2000.png", width = 800, height = 500)  # 然后将图形保存到特定路径
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_soybean_2000.png", width = 800, height = 500)  # 然后将图形保存到特定路径
 plot(Fattyacids_soybean_2000, main="Fattyacids_soybean_2000", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fattyacids_soybean_2010, main="Fattyacids_soybean_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_soybean_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_soybean_2010.png", width = 800, height = 500) 
 plot(Fattyacids_soybean_2010, main="Fattyacids_soybean_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fattyacids_soybean_2020, main="Fattyacids_soybean_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_soybean_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_soybean_2020.png", width = 800, height = 500) 
 plot(Fattyacids_soybean_2020, main="Fattyacids_soybean_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 # 17 Pigeon Pea
 # pige_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
 #                      select = c("x", "y", "swpy"))
-pige_2005 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
+pige_2010 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
                    select = c("x", "y", "pige_a"))
-pige_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
-                   select = c("x", "y", "pige_a"))
-pige_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+pige_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
                    select = c("x", "y", "PIGE_A")) 
 
 pige_2010 <- pige_2010[pige_a != 0]
@@ -116,12 +105,12 @@ Energy_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Energ
 Energy_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Energy_kJ'], fun=mean)
 
 plot(Energy_pige_2010, main="Energy_Pigeon pea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Energy_pige_2010, main="Energy_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Energy_pige_2020, main="Energy_Pigeon pea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Energy_pige_2020, main="Energy_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -133,12 +122,12 @@ Water_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Water_
 Water_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Water_g'], fun=mean)
 
 plot(Water_pige_2010, main="Water_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Water_pige_2010, main="Water_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Water_pige_2020, main="Water_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Water_pige_2020, main="Water_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -150,12 +139,12 @@ Protein_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Prot
 Protein_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Protein_g'], fun=mean)
 
 plot(Protein_pige_2010, main="Protein_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Protein_pige_2010, main="Protein_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Protein_pige_2020, main="Protein_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Protein_pige_2020, main="Protein_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -167,12 +156,12 @@ Fat_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Fat_g'],
 Fat_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Fat_g'], fun=mean)
 
 plot(Fat_pige_2010, main="Fat_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Fat_pige_2010, main="Fat_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fat_pige_2020, main="Fat_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Fat_pige_2020, main="Fat_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -184,12 +173,12 @@ Carbohydrate_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 
 Carbohydrate_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Carbohydrate_g'], fun=mean)
 
 plot(Carbohydrate_pige_2010, main="Carbohydrate_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Carbohydrate_pige_2010, main="Carbohydrate_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Carbohydrate_pige_2020, main="Carbohydrate_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Carbohydrate_pige_2020, main="Carbohydrate_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -201,12 +190,12 @@ Fibre_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Fibre_
 Fibre_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Fibre_g'], fun=mean)
 
 plot(Fibre_pige_2010, main="Fibre_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Fibre_pige_2010, main="Fibre_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fibre_pige_2020, main="Fibre_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Fibre_pige_2020, main="Fibre_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -219,12 +208,12 @@ Ca_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Ca_mg'], 
 Ca_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Ca_mg'], fun=mean)
 
 plot(Ca_pige_2010, main="Ca_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Ca_pige_2010, main="Ca_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Ca_pige_2020, main="Ca_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Ca_pige_2020, main="Ca_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -236,12 +225,12 @@ P_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'P_mg'], fu
 P_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'P_mg'], fun=mean)
 
 plot(P_pige_2010, main="P_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(P_pige_2010, main="P_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(P_pige_2020, main="P_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(P_pige_2020, main="P_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -253,12 +242,12 @@ Mg_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Mg_mg'], 
 Mg_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Mg_mg'], fun=mean)
 
 plot(Mg_pige_2010, main="Mg_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Mg_pige_2010, main="Mg_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Mg_pige_2020, main="Mg_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Mg_pige_2020, main="Mg_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -270,12 +259,12 @@ K_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'K_mg'], fu
 K_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'K_mg'], fun=mean)
 
 plot(K_pige_2010, main="K_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(K_pige_2010, main="K_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(K_pige_2020, main="K_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(K_pige_2020, main="K_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -287,12 +276,12 @@ Na_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Na_mg'], 
 Na_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Na_mg'], fun=mean)
 
 plot(Na_pige_2010, main="Na_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Na_pige_2010, main="Na_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Na_pige_2020, main="Na_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Na_pige_2020, main="Na_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -305,12 +294,12 @@ Fe_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Fe_mg'], 
 Fe_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Fe_mg'], fun=mean)
 
 plot(Fe_pige_2010, main="Fe_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Fe_pige_2010, main="Fe_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fe_pige_2020, main="Fe_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Fe_pige_2020, main="Fe_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -322,12 +311,12 @@ Cu_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Cu_mg'], 
 Cu_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Cu_mg'], fun=mean)
 
 plot(Cu_pige_2010, main="Cu_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Cu_pige_2010, main="Cu_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Cu_pige_2020, main="Cu_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Cu_pige_2020, main="Cu_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -339,12 +328,12 @@ Zn_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Zn_mg'], 
 Zn_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Zn_mg'], fun=mean)
 
 plot(Zn_pige_2010, main="Zn_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Zn_pige_2010, main="Zn_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Zn_pige_2020, main="Zn_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Zn_pige_2020, main="Zn_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -356,12 +345,12 @@ Vitamin_pige_2010 <- rasterize(pige_2010[, c("x", "y")], grid, pige_2010[, 'Vita
 Vitamin_pige_2020 <- rasterize(pige_2020[, c("x", "y")], grid, pige_2020[, 'Vitamin_mg'], fun=mean)
 
 plot(Vitamin_pige_2010, main="Vitamin_pige_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_Pigeon pea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_Pigeon pea_2010.png", width = 800, height = 500) 
 plot(Vitamin_pige_2010, main="Vitamin_Pigeon pea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Vitamin_pige_2020, main="Vitamin_pige_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_Pigeon pea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_Pigeon pea_2020.png", width = 800, height = 500) 
 plot(Vitamin_pige_2020, main="Vitamin_Pigeon pea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -370,9 +359,9 @@ dev.off()
 #                    select = c("x", "y", "swpy"))
 # lentil_2005 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
 #                      select = c("x", "y", "lent_a"))
-lentil_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+lentil_2010 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
                      select = c("x", "y", "lent_a"))
-lentil_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+lentil_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
                      select = c("x", "y", "LENT_A"))
 
 lentil_2010 <- lentil_2010[lent_a != 0]
@@ -386,12 +375,12 @@ Water_lentil_2010 <- rasterize(lentil_2010[, c("x", "y")], grid, lentil_2010[, '
 Water_lentil_2020 <- rasterize(lentil_2020[, c("x", "y")], grid, lentil_2020[, 'Water_g'], fun=mean)
 
 plot(Water_lentil_2010, main="Water_lentil_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_lentil_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_lentil_2010.png", width = 800, height = 500) 
 plot(Water_lentil_2010, main="Water_lentil_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_lentil_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_lentil_2020.png", width = 800, height = 500) 
 plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -402,19 +391,19 @@ Protein_lentil_2010 <- rasterize(lentil_2010[, c("x", "y")], grid, lentil_2010[,
 Protein_lentil_2020 <- rasterize(lentil_2020[, c("x", "y")], grid, lentil_2020[, 'Protein_g'], fun=mean)
 
 plot(Water_lentil_2010, main="Protein_lentil_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2010.png", width = 800, height = 500) 
 plot(Water_lentil_2010, main="Water_lentil_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Water_lentil_2020, main="Protein_lentil_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2020.png", width = 800, height = 500) 
 plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 # 16 Cowpea
-cowpea_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+cowpea_2010 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
                      select = c("x", "y", "cowp_a"))
-cowpea_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+cowpea_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
                      select = c("x", "y", "COWP_A")) 
 
 cowpea_2010 <- cowpea_2010[cowp_a != 0]
@@ -429,12 +418,12 @@ Energy_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 
 Energy_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Energy_g'], fun=mean)
 
 plot(Energy_cowpea_2010, main="Energy_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_cowpea_2010.png", width = 800, height = 500) 
 plot(Energy_cowpea_2010, main="Energy_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Energy_cowpea_2020, main="Energy_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_cowpea_2020.png", width = 800, height = 500) 
 plot(Energy_cowpea_2020, main="Energy_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -446,12 +435,12 @@ Water_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, '
 Water_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Water_g'], fun=mean)
 
 plot(Water_cowpea_2010, main="Water_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_cowpea_2010.png", width = 800, height = 500) 
 plot(Water_cowpea_2010, main="Water_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Water_cowpea_2020, main="Water_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_cowpea_2020.png", width = 800, height = 500) 
 plot(Water_cowpea_2020, main="Water_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -463,12 +452,12 @@ Protein_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[,
 Protein_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Protein_g'], fun=mean)
 
 plot(Protein_cowpea_2010, main="Protein_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_cowpea_2010.png", width = 800, height = 500) 
 plot(Protein_cowpea_2010, main="Protein_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Protein_cowpea_2020, main="Protein_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_cowpea_2020.png", width = 800, height = 500) 
 plot(Protein_cowpea_2020, main="Protein_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -480,12 +469,12 @@ Fat_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Fa
 Fat_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Fat_g'], fun=mean)
 
 plot(Fat_cowpea_2010, main="Fat_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_cowpea_2010.png", width = 800, height = 500) 
 plot(Fat_cowpea_2010, main="Fat_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fat_cowpea_2020, main="Fat_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_cowpea_2020.png", width = 800, height = 500) 
 plot(Fat_cowpea_2020, main="Fat_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -497,12 +486,12 @@ Carbohydrate_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2
 Carbohydrate_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Carbohydrate_g'], fun=mean)
 
 plot(Carbohydrate_cowpea_2010, main="Carbohydrate_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_cowpea_2010.png", width = 800, height = 500) 
 plot(Carbohydrate_cowpea_2010, main="Carbohydrate_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Carbohydrate_cowpea_2020, main="Carbohydrate_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_cowpea_2020.png", width = 800, height = 500) 
 plot(Carbohydrate_cowpea_2020, main="Carbohydrate_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -514,12 +503,12 @@ Fibre_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, '
 Fibre_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Fibre_g'], fun=mean)
 
 plot(Fibre_cowpea_2010, main="Fibre_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_cowpea_2010.png", width = 800, height = 500) 
 plot(Fibre_cowpea_2010, main="Fibre_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fibre_cowpea_2020, main="Fibre_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_cowpea_2020.png", width = 800, height = 500) 
 plot(Fibre_cowpea_2020, main="Fibre_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -532,12 +521,12 @@ Ca_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Ca_
 Ca_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Ca_mg'], fun=mean)
 
 plot(Ca_cowpea_2010, main="Ca_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_cowpea_2010.png", width = 800, height = 500) 
 plot(Ca_cowpea_2010, main="Ca_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Ca_cowpea_2020, main="Ca_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Ca_cowpea_2020.png", width = 800, height = 500) 
 plot(Ca_cowpea_2020, main="Ca_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -549,12 +538,12 @@ P_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'P_mg
 P_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'P_mg'], fun=mean)
 
 plot(P_cowpea_2010, main="P_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_cowpea_2010.png", width = 800, height = 500) 
 plot(P_cowpea_2010, main="P_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(P_cowpea_2020, main="P_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/P_cowpea_2020.png", width = 800, height = 500) 
 plot(P_cowpea_2020, main="P_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -566,12 +555,12 @@ Mg_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Mg_
 Mg_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Mg_mg'], fun=mean)
 
 plot(Mg_cowpea_2010, main="Mg_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_cowpea_2010.png", width = 800, height = 500) 
 plot(Mg_cowpea_2010, main="Mg_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Mg_cowpea_2020, main="Mg_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Mg_cowpea_2020.png", width = 800, height = 500) 
 plot(Mg_cowpea_2020, main="Mg_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -583,12 +572,12 @@ K_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'K_mg
 K_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'K_mg'], fun=mean)
 
 plot(K_cowpea_2010, main="K_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_cowpea_2010.png", width = 800, height = 500) 
 plot(K_cowpea_2010, main="K_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(K_cowpea_2020, main="K_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/K_cowpea_2020.png", width = 800, height = 500) 
 plot(K_cowpea_2020, main="K_cowpea_2020", xlab="Longitude", ylab="Latitude")
 
 # Na
@@ -599,12 +588,12 @@ Na_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Na_
 Na_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Na_mg'], fun=mean)
 
 plot(Na_cowpea_2010, main="Na_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_cowpea_2010.png", width = 800, height = 500) 
 plot(Na_cowpea_2010, main="Na_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Na_cowpea_2020, main="Na_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Na_cowpea_2020.png", width = 800, height = 500) 
 plot(Na_cowpea_2020, main="Na_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -617,12 +606,12 @@ Fe_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Fe_
 Fe_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Fe_mg'], fun=mean)
 
 plot(Fe_cowpea_2010, main="Fe_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_cowpea_2010.png", width = 800, height = 500) 
 plot(Fe_cowpea_2010, main="Fe_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fe_cowpea_2020, main="Fe_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fe_cowpea_2020.png", width = 800, height = 500) 
 plot(Fe_cowpea_2020, main="Fe_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -634,12 +623,12 @@ Cu_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Cu_
 Cu_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Cu_mg'], fun=mean)
 
 plot(Cu_cowpea_2010, main="Cu_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_cowpea_2010.png", width = 800, height = 500) 
 plot(Cu_cowpea_2010, main="Cu_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Cu_cowpea_2020, main="Cu_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Cu_cowpea_2020.png", width = 800, height = 500) 
 plot(Cu_cowpea_2020, main="Cu_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -651,12 +640,12 @@ Zn_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Zn_
 Zn_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Zn_mg'], fun=mean)
 
 plot(Zn_cowpea_2010, main="Zn_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_cowpea_2010.png", width = 800, height = 500) 
 plot(Zn_cowpea_2010, main="Zn_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Zn_cowpea_2020, main="Zn_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Zn_cowpea_2020.png", width = 800, height = 500) 
 plot(Zn_cowpea_2020, main="Zn_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -668,23 +657,21 @@ Vitamin_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[,
 Vitamin_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Vitamin_mg'], fun=mean)
 
 plot(Vitamin_cowpea_2010, main="Vitamin_cowpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_cowpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_cowpea_2010.png", width = 800, height = 500) 
 plot(Vitamin_cowpea_2010, main="Vitamin_cowpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Vitamin_cowpea_2020, main="Vitamin_cowpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_cowpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Vitamin_cowpea_2020.png", width = 800, height = 500) 
 plot(Vitamin_cowpea_2020, main="Vitamin_cowpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 # 15 Chickpea
 # chickpea_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
 #                    select = c("x", "y", "swpy"))
-chickpea_2005 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
+chickpea_2010 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
                        select = c("x", "y", "chic_a"))
-chickpea_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
-                       select = c("x", "y", "chic_a"))
-chickpea_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+chickpea_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
                        select = c("x", "y", "CHIC_A")) 
 
 chickpea_2010 <- chickpea_2010[chic_a != 0]
@@ -699,12 +686,12 @@ Water_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_20
 Water_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Water_g'], fun=mean)
 
 plot(Water_chickpea_2010, main="Water_chickpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_chickpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_chickpea_2010.png", width = 800, height = 500) 
 plot(Water_chickpea_2010, main="Water_chickpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Water_chickpea_2020, main="Water_chickpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_chickpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Water_chickpea_2020.png", width = 800, height = 500) 
 plot(Water_chickpea_2020, main="Water_chickpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -716,12 +703,12 @@ Protein_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_
 Protein_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Protein_g'], fun=mean)
 
 plot(Protein_chickpea_2010, main="Protein_chickpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_chickpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_chickpea_2010.png", width = 800, height = 500) 
 plot(Protein_chickpea_2010, main="Protein_chickpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Protein_chickpea_2020, main="Protein_chickpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_chickpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_chickpea_2020.png", width = 800, height = 500) 
 plot(Protein_chickpea_2020, main="Protein_chickpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -733,12 +720,12 @@ Fat_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickpea_2010
 Fat_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Fat_g'], fun=mean)
 
 plot(Fat_chickpea_2010, main="Fat_chickpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_chickpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_chickpea_2010.png", width = 800, height = 500) 
 plot(Fat_chickpea_2010, main="Fat_chickpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fat_chickpea_2020, main="Fat_chickpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_chickpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_chickpea_2020.png", width = 800, height = 500) 
 plot(Fat_chickpea_2020, main="Fat_chickpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -750,12 +737,12 @@ Carbohydrate_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chic
 Carbohydrate_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Carbohydrate_g'], fun=mean)
 
 plot(Carbohydrate_chickpea_2010, main="Carbohydrate_chickpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_chickpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_chickpea_2010.png", width = 800, height = 500) 
 plot(Carbohydrate_chickpea_2010, main="Carbohydrate_chickpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Carbohydrate_chickpea_2020, main="Carbohydrate_chickpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_chickpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Carbohydrate_chickpea_2020.png", width = 800, height = 500) 
 plot(Carbohydrate_chickpea_2020, main="Carbohydrate_chickpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -767,23 +754,23 @@ Fattyacids_chickpea_2010 <- rasterize(chickpea_2010[, c("x", "y")], grid, chickp
 Fattyacids_chickpea_2020 <- rasterize(chickpea_2020[, c("x", "y")], grid, chickpea_2020[, 'Fattyacids_g'], fun=mean)
 
 plot(Fattyacids_chickpea_2010, main="Fattyacids_chickpea_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_chickpea_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_chickpea_2010.png", width = 800, height = 500) 
 plot(Fattyacids_chickpea_2010, main="Fattyacids_chickpea_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fattyacids_chickpea_2020, main="Fattyacids_chickpea_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_chickpea_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fattyacids_chickpea_2020.png", width = 800, height = 500) 
 plot(Fattyacids_chickpea_2020, main="Fattyacids_chickpea_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 # 14 Bean
-bean_2000 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
+bean_2000 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2000_global_Y_TA.csv", 
                    select = c("x", "y", "bean"))
-bean_2005 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
+bean_2005 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2005_global_Y_TA.csv", 
                    select = c("x", "y", "bean_a"))
-bean_2010 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
+bean_2010 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2010_global_Y_TA.csv", 
                    select = c("x", "y", "bean_a"))
-bean_2020 <- fread("D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
+bean_2020 <- fread("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/4_csv/SPAM_2020_global_Y_TA.csv", 
                    select = c("x", "y", "BEAN_A")) 
 
 bean_2000 <- bean_2000[bean != 0]
@@ -801,17 +788,17 @@ Protein_bean_2010 <- rasterize(bean_2010[, c("x", "y")], grid, bean_2010[, 'Prot
 Protein_bean_2020 <- rasterize(bean_2020[, c("x", "y")], grid, bean_2020[, 'Protein_g'], fun=mean)
 
 plot(Protein_bean_2000, main="Protein_bean_2000", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2000.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2000.png", width = 800, height = 500) 
 plot(Protein_bean_2000, main="Protein_bean_2000", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Protein_bean_2010, main="Protein_bean_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2010.png", width = 800, height = 500) 
 plot(Protein_bean_2010, main="Protein_bean_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Protein_bean_2020, main="Protein_bean_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_bean_2020.png", width = 800, height = 500) 
 plot(Protein_bean_2020, main="Protein_bean_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -825,17 +812,17 @@ Fat_bean_2010 <- rasterize(bean_2010[, c("x", "y")], grid, bean_2010[, 'Fat_g'],
 Fat_bean_2020 <- rasterize(bean_2020[, c("x", "y")], grid, bean_2020[, 'Fat_g'], fun=mean)
 
 plot(Fat_bean_2000, main="Fat_bean_2000", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2000.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2000.png", width = 800, height = 500) 
 plot(Fat_bean_2000, main="Fat_bean_2000", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fat_bean_2010, main="Fat_bean_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2010.png", width = 800, height = 500) 
 plot(Fat_bean_2010, main="Fat_bean_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fat_bean_2020, main="Fat_bean_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fat_bean_2020.png", width = 800, height = 500) 
 plot(Fat_bean_2020, main="Fat_bean_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
@@ -849,16 +836,16 @@ Fibre_bean_2010 <- rasterize(bean_2010[, c("x", "y")], grid, bean_2010[, 'Fibre_
 Fibre_bean_2020 <- rasterize(bean_2020[, c("x", "y")], grid, bean_2020[, 'Fibre_g'], fun=mean)
 
 plot(Fibre_bean_2000, main="Fibre_bean_2000", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2000.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2000.png", width = 800, height = 500) 
 plot(Fibre_bean_2000, main="Fibre_bean_2000", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fibre_bean_2010, main="Fibre_bean_2010", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2010.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2010.png", width = 800, height = 500) 
 plot(Fibre_bean_2010, main="Fibre_bean_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 plot(Fibre_bean_2020, main="Fibre_bean_2020", xlab="Longitude", ylab="Latitude") 
-png(filename = "D:/1_download/1_onedrive/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2020.png", width = 800, height = 500) 
+png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Fibre_bean_2020.png", width = 800, height = 500) 
 plot(Fibre_bean_2020, main="Fibre_bean_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
