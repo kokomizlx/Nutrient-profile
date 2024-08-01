@@ -392,12 +392,12 @@ Protein_lentil_2020 <- rasterize(lentil_2020[, c("x", "y")], grid, lentil_2020[,
 
 plot(Protein_lentil_2010, main="Protein_lentil_2010", xlab="Longitude", ylab="Latitude") 
 png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2010.png", width = 800, height = 500) 
-plot(Protein_lentil_2010, main="Water_lentil_2010", xlab="Longitude", ylab="Latitude")
+plot(Protein_lentil_2010, main="Protein_lentil_2010", xlab="Longitude", ylab="Latitude")
 dev.off()
 
-plot(Water_lentil_2020, main="Protein_lentil_2020", xlab="Longitude", ylab="Latitude") 
+plot(Protein_lentil_2020, main="Protein_lentil_2020", xlab="Longitude", ylab="Latitude") 
 png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Protein_lentil_2020.png", width = 800, height = 500) 
-plot(Water_lentil_2020, main="Water_lentil_2020", xlab="Longitude", ylab="Latitude")
+plot(Protein_lentil_2020, main="Protein_lentil_2020", xlab="Longitude", ylab="Latitude")
 dev.off()
 
 # 16 Cowpea
