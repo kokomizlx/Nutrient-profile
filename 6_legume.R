@@ -411,11 +411,11 @@ cowpea_2020 <- cowpea_2020[COWP_A != 0]
 
 # 300527 Cowpea, seeds, raw
 # Energy
-cowpea_2010$Energy_g <- cowpea_2010$cowp_a*1419.07*10 # energy, total metabolizable; calculated from the energy-producing food components
-cowpea_2020$Energy_g <- cowpea_2020$COWP_A*1419.07*10 # (original as from source)
+cowpea_2010$Energy_kJ <- cowpea_2010$cowp_a*1419.07*10 # energy, total metabolizable; calculated from the energy-producing food components
+cowpea_2020$Energy_kJ <- cowpea_2020$COWP_A*1419.07*10 # (original as from source)
 
-Energy_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Energy_g'], fun=mean)
-Energy_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Energy_g'], fun=mean)
+Energy_cowpea_2010 <- rasterize(cowpea_2010[, c("x", "y")], grid, cowpea_2010[, 'Energy_kJ'], fun=mean)
+Energy_cowpea_2020 <- rasterize(cowpea_2020[, c("x", "y")], grid, cowpea_2020[, 'Energy_kJ'], fun=mean)
 
 plot(Energy_cowpea_2010, main="Energy_cowpea_2010", xlab="Longitude", ylab="Latitude") 
 png(filename = "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results/Energy_cowpea_2010.png", width = 800, height = 500) 
