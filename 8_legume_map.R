@@ -1,10 +1,9 @@
 # R配色网址：https://blog.csdn.net/bone_ace/article/details/47362619
-
+library(ggplot2)
 save_path <- "D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/06-12 Nutrition profile/2024-06-26 营养统计/Results_map/"
 
 # 20 Soybean
 # Water
-library(ggplot2)
 Water_Soybean_2000 <- ggplot() +
   geom_map(
     data = world, map = world,
@@ -551,3 +550,336 @@ ggsave(filename = paste0(save_path, "Carbohydrate_Cowpea_2010.png"), plot = Carb
 ggsave(filename = paste0(save_path, "Carbohydrate_Cowpea_2020.png"), plot = Carbohydrate_Cowpea_2020, width = 8, height = 4.5, limitsize = FALSE)
 
 # Fibre
+Fibre_Cowpea_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = cowpea_2010,
+    aes(x, y, fill = Fibre_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "darkolivegreen1", high = "darkolivegreen4")  
+
+Fibre_Cowpea_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = cowpea_2020,
+    aes(x, y, fill = Fibre_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "darkolivegreen1", high = "darkolivegreen4")   
+
+Fibre_Cowpea_2010 <- Fibre_Cowpea_2010 + labs(title = "Fibre Cowpea 2010", x = "Longitude", y = "Latitude")
+Fibre_Cowpea_2020 <- Fibre_Cowpea_2020 + labs(title = "Fibre Cowpea 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Fibre_Cowpea_2010.png"), plot = Fibre_Cowpea_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Fibre_Cowpea_2020.png"), plot = Fibre_Cowpea_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+# Vitamin
+Vitamin_Cowpea_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = cowpea_2010,
+    aes(x, y, fill = Vitamin_mg),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "thistle1", high = "thistle4") 
+
+Vitamin_Cowpea_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = cowpea_2020,
+    aes(x, y, fill = Vitamin_mg),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "thistle1", high = "thistle4") 
+
+Vitamin_Cowpea_2010 <- Vitamin_Cowpea_2010 + labs(title = "Vitamin Cowpea 2010", x = "Longitude", y = "Latitude")
+Vitamin_Cowpea_2020 <- Vitamin_Cowpea_2020 + labs(title = "Vitamin Cowpea 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Vitamin_Cowpea_2010.png"), plot = Vitamin_Cowpea_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Vitamin_Cowpea_2020.png"), plot = Vitamin_Cowpea_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+############################################################################################
+# 15 Chickpea
+# Water
+Water_Chickpea_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2010,
+    aes(x, y, fill = Water_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "lightblue", high = "darkblue") 
+
+Water_Chickpea_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2020,
+    aes(x, y, fill = Water_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "lightblue", high = "darkblue") 
+
+Water_Chickpea_2010 <- Water_Chickpea_2010 + labs(title = "Water Chickpea 2010", x = "Longitude", y = "Latitude")
+Water_Chickpea_2020 <- Water_Chickpea_2020 + labs(title = "Water Chickpea 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Water_Chickpea_2010.png"), plot = Water_Chickpea_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Water_Chickpea_2020.png"), plot = Water_Chickpea_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+# Protein
+Protein_Chickpea_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2010,
+    aes(x, y, fill = Protein_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "indianred", high = "indianred4") 
+
+Protein_Chickpea_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2020,
+    aes(x, y, fill = Protein_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "indianred", high = "indianred4") 
+
+Protein_Chickpea_2010 <- Protein_Chickpea_2010 + labs(title = "Protein Chickpea 2010", x = "Longitude", y = "Latitude")
+Protein_Chickpea_2020 <- Protein_Chickpea_2020 + labs(title = "Protein Chickpea 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Protein_Chickpea_2010.png"), plot = Protein_Chickpea_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Protein_Chickpea_2020.png"), plot = Protein_Chickpea_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+# Fat
+Fat_Chickpea_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2010,
+    aes(x, y, fill = Fat_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "burlywood1", high = "burlywood4") 
+
+Fat_Chickpea_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2020,
+    aes(x, y, fill = Fat_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "burlywood1", high = "burlywood4") 
+
+Fat_Chickpea_2010 <- Fat_Chickpea_2010 + labs(title = "Fat Chickpea 2010", x = "Longitude", y = "Latitude")
+Fat_Chickpea_2020 <- Fat_Chickpea_2020 + labs(title = "Fat Chickpea 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Fat_Chickpea_2010.png"), plot = Fat_Chickpea_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Fat_Chickpea_2020.png"), plot = Fat_Chickpea_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+# Carbohydrate
+Carbohydrate_Chickpea_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2010,
+    aes(x, y, fill = Carbohydrate_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "aquamarine", high = "aquamarine4")  
+
+Carbohydrate_Chickpea_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2020,
+    aes(x, y, fill = Carbohydrate_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "aquamarine", high = "aquamarine4")  
+
+Carbohydrate_Chickpea_2010 <- Carbohydrate_Chickpea_2010 + labs(title = "Carbohydrate Chickpea 2010", x = "Longitude", y = "Latitude")
+Carbohydrate_Chickpea_2020 <- Carbohydrate_Chickpea_2020 + labs(title = "Carbohydrate Chickpea 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Carbohydrate_Chickpea_2010.png"), plot = Carbohydrate_Chickpea_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Carbohydrate_Chickpea_2020.png"), plot = Carbohydrate_Chickpea_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+# Fatty acids
+Fattyacids_Chickpea_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2010,
+    aes(x, y, fill = Fattyacids_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "antiquewhite", high = "antiquewhite4")  
+
+Fattyacids_Chickpea_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = chickpea_2020,
+    aes(x, y, fill = Fattyacids_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "antiquewhite", high = "antiquewhite4") 
+
+Fattyacids_Chickpea_2010 <- Fattyacids_Chickpea_2010 + labs(title = "Fattyacids Chickpea 2010", x = "Longitude", y = "Latitude")
+Fattyacids_Chickpea_2020 <- Fattyacids_Chickpea_2020 + labs(title = "Fattyacids Chickpea 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Fattyacids_Chickpea_2010.png"), plot = Fattyacids_Chickpea_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Fattyacids_Chickpea_2020.png"), plot = Fattyacids_Chickpea_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+############################################################################################
+# 14 Bean
+# Protein
+Protein_Bean_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = bean_2010,
+    aes(x, y, fill = Protein_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "indianred", high = "indianred4") 
+
+Protein_Bean_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = bean_2020,
+    aes(x, y, fill = Protein_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "indianred", high = "indianred4") 
+
+Protein_Bean_2010 <- Protein_Bean_2010 + labs(title = "Protein Bean 2010", x = "Longitude", y = "Latitude")
+Protein_Bean_2020 <- Protein_Bean_2020 + labs(title = "Protein Bean 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Protein_Bean_2010.png"), plot = Protein_Bean_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Protein_Bean_2020.png"), plot = Protein_Bean_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+# Fat
+Fat_Bean_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = bean_2010,
+    aes(x, y, fill = Fat_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "burlywood1", high = "burlywood4") 
+
+Fat_Bean_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = bean_2020,
+    aes(x, y, fill = Fat_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "burlywood1", high = "burlywood4") 
+
+Fat_Bean_2010 <- Fat_Bean_2010 + labs(title = "Fat Bean 2010", x = "Longitude", y = "Latitude")
+Fat_Bean_2020 <- Fat_Bean_2020 + labs(title = "Fat Bean 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Fat_Bean_2010.png"), plot = Fat_Bean_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Fat_Bean_2020.png"), plot = Fat_Bean_2020, width = 8, height = 4.5, limitsize = FALSE)
+
+# Fibre
+Fibre_Bean_2010 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = bean_2010,
+    aes(x, y, fill = Fibre_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "darkolivegreen1", high = "darkolivegreen4")   
+
+Fibre_Bean_2020 <- ggplot() +
+  geom_map(
+    data = world, map = world,
+    aes(long, lat, map_id = region),
+    color = "white", fill = "lightgray", size = 0.1
+  ) +
+  geom_tile(
+    data = bean_2020,
+    aes(x, y, fill = Fibre_g),  # fill >> column name
+    alpha = 0.7
+  ) +
+  scale_fill_continuous(trans = "log10",low = "darkolivegreen1", high = "darkolivegreen4")   
+
+Fibre_Bean_2010 <- Fibre_Bean_2010 + labs(title = "Fibre Bean 2010", x = "Longitude", y = "Latitude")
+Fibre_Bean_2020 <- Fibre_Bean_2020 + labs(title = "Fibre Bean 2020", x = "Longitude", y = "Latitude")
+
+ggsave(filename = paste0(save_path, "Fibre_Bean_2010.png"), plot = Fibre_Bean_2010, width = 8, height = 4.5, limitsize = FALSE)
+ggsave(filename = paste0(save_path, "Fibre_Bean_2020.png"), plot = Fibre_Bean_2020, width = 8, height = 4.5, limitsize = FALSE)
+
