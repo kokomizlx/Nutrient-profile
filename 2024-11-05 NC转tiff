@@ -1,0 +1,42 @@
+# 教程链接：https://mp.weixin.qq.com/s/yLMRAfu9oL5AxCtZRCuSaA
+# 根据你的实际文件路径修改下面的代码
+setwd("D:/5-onedrive data/OneDrive - 西湖大学/1_Project/2024/10-30 转组研究方案/173 crops")
+
+# 清空环境中的所有变量
+rm(list = ls())
+
+#查看nc数据，读取nc数据有两个包，terra和ncdf4.
+library(terra)
+library(ncdf4)
+library(sp)
+library(raster)
+
+# 读取netCDF文件
+apple_nc = nc_open("2_data/NC_maps/apple.nc")
+
+# 获取经纬度变量数据
+apple_lon = ncvar_get(apple_nc, "lon")
+apple_lat = ncvar_get(apple_nc, "lat")
+apple_var <- ncvar_get(apple_nc, "croparea")  # 直接使用ncvar_get提取变量
+
+# 关闭文件
+nc_close(apple_nc)
+
+# 将数据转换成RasterLayer对象
+apple_var <- as.matrix(apple_var)
+ras_apple = raster(t(apple_var), xmn = min(apple_lon), xmx = max(apple_lon), 
+                   ymn = min(apple_lat), ymx = max(apple_lat))
+
+# 设置RasterLayer的坐标系
+proj4string(ras_apple) = CRS("+proj=longlat +datum=WGS84")
+
+# 将RasterLayer转换为Raster类对象
+ras_apple_data = as(ras_apple, "Raster")
+
+# Optionally flip if needed
+ras_apple <- flip(ras_apple, direction = 'y')
+
+plot(ras_apple_data)
+
+writeRaster(ras_apple_data, filename = "3_output/apple.tiff", format = 'GTiff',
+            datatype = 'INT1U', overwrite = TRUE)
